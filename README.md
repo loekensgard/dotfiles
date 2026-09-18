@@ -11,6 +11,7 @@ Personal Claude Code configuration.
 | `claude/statusline.sh` | `~/.claude/statusline.sh` | The Claude Code status line. Referenced by `settings.json`. |
 | `claude/output-styles/*.md` | `~/.claude/output-styles/` | Output styles for Claude Code. Switch with `/output-style`. |
 | `claude/rules/*.md` | `~/.claude/rules/` | Rules that load every session. `secret-handling.md` is generic. `secret-map.local.md` names the accounts, vaults, and items. It holds no secret values and is gitignored. |
+| `claude/skills/*` | `~/.claude/skills/` | Personal skills. Loaded on demand by Claude Code and OpenCode. |
 
 ## Prerequisites
 

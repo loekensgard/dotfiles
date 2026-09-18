@@ -100,6 +100,12 @@ for rule in "$REPO"/claude/rules/*.md; do
   link_file "claude/rules/$(basename "$rule")" "$CLAUDE_DIR/rules/$(basename "$rule")"
 done
 
+for skill_dir in "$REPO"/claude/skills/*/; do
+  [ -d "$skill_dir" ] || continue
+  link_file "claude/skills/$(basename "$skill_dir")" "$CLAUDE_DIR/skills/$(basename "$skill_dir")"
+done
+
 info "== stale links =="
 prune_links "$CLAUDE_DIR/output-styles"
 prune_links "$CLAUDE_DIR/rules"
+prune_links "$CLAUDE_DIR/skills"
