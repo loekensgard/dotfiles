@@ -1,0 +1,16 @@
+# Backups that install.sh creates
+*.bak
+*.bak-*
+
+# A filled-in local rules file is machine-local. Only the template belongs here.
+*.local.md
+
+# Never commit environment files or key material
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+
+.DS_Store
