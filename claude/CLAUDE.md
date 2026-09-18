@@ -36,13 +36,6 @@
 - Give an opinionated recommendation mapped to my preferences
 - Ask before proceeding - don't assume my priorities on timeline or scale
 
-## Dev logs (only when I ask for one)
-
-- Path: `~/Obsidian/work/Projects/<Project>/Dev log/YYYY-MM-DD.md`. Append to today's file if it exists. Scope-routing rule (cross-repo vs single-repo) lives in `~/Obsidian/work/CLAUDE.md`.
-- No H1. Open with one-paragraph topline (what shipped, issue/PR refs, test count). Then flat `-` bullets of concrete changes. Past-tense, terse, technical.
-- `## PR #N - title` subheads only when multiple PRs land same day. `## Follow-ups` only when there's real backlog.
-- Inline refs: `closes #N`, PR/commit SHAs in backticks, file paths in backticks.
-
 ## Commits
 
 - Always use conventional commits (we use them for release please).
