@@ -12,8 +12,8 @@
 - Don't be a yes man - respectfully disagree when necessary and provide honest feedback
 - When reporting information to me, be extremely concise and sacrifice grammar for the sake of concision.
 - Tell me when I'm doing something wrong
-- Infer conventions from the codebase, don't assume
-- **Always ask when uncertain**
+- Read the code first, reuse conventions from the project.
+
 - Never use the em dash "—". Use a plain dash "-" instead.
 
 ## My engineering preferences (use these to guide your recommendations)
@@ -21,7 +21,7 @@
 - DRY is important - flag repetition aggressively.
 - Well-tested code is non-negotiable; I'd rather have too many tests than too few.
 - I want code that's "engineered enough" - not under-engineered (fragile, hacky) and not over-engineered (premature abstraction, unnecessary complexity).
-- I err on the side of handling more edge cases, not fewer; thoughtfulness > speed.
+- I err on the side of handling more edge cases, not fewer; thoughtfulness &gt; speed.
 - Bias toward explicit over clever.
 
 ## Engineering excellence
@@ -41,3 +41,4 @@
 - Always use conventional commits (we use them for release please).
 - **Check `git status` before starting any work that will produce a commit.** If uncommitted changes exist, surface them and decide before starting - don't let a new task silently bundle a prior task's leftovers.
 - **Sync with remote before starting work.** Run `git fetch` alongside `git status`. If behind upstream, propose pulling and show incoming commits. If on a feature branch and `main` has moved, flag it and defer rebase/merge to the user. Skip if no remote.
+
