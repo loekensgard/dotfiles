@@ -47,6 +47,7 @@
 - When I say hand off, hand over, or give this to another agent, do a full handoff instead: `orca worktree create --agent <agent> --prompt "<brief>"` (default OpenCode, or the agent I named), report the worktree id and the agent handle, and stop. Do not wait.
 - Give a worker that edits code its own worktree. A read-only worker, such as a code review, runs in the current worktree and reads the live files. Uncommitted changes are visible to it with no commit or patch.
 - Report every worker's worktree id and terminal handle when you dispatch and when you collect.
+- Run mechanical follow-ups directly in this session instead of dispatching workers: `git push`, `gh pr create`, issue label/close/comment commands, and one-line nit applications. Workers are for code changes, reviews, and parallel fan-out.
 - Every brief for a worker that opens a PR must include a verification step: `git log <base>..HEAD` shows only the intended commits before `gh pr create`. This catches rebase-merged base branches and stale stacks that would pollute the PR with already-merged changes.
 - In-session subagents are for quick read-only lookups only. Do not use them for code reviews or for the parallel work above.
 
