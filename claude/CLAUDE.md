@@ -14,6 +14,10 @@
 - Do not echo a secret value back in a response. Do not copy it into another file. Do not commit it. Do not send it to any external service.
 - For 1Password, Keychain, and secret locations, follow `~/.claude/rules/secret-handling.md` and `~/.claude/rules/secret-map.local.md`. Read these files before you handle secrets.
 
+## Logfire
+
+- When you query Logfire telemetry, production logs, traces or exceptions: follow [`~/.claude/rules/logfire.md`](rules/logfire.md).
+
 ## Communication Preferences
 
 - Be concise, direct, and objective - prioritize technical accuracy over validation
