@@ -17,6 +17,8 @@
 ## Communication Preferences
 
 - Be concise, direct, and objective - prioritize technical accuracy over validation
+- Filter large command output at the shell (`--jq`, `jq`, `head`) so it never enters context whole
+- Fetch `raw.githubusercontent.com` for file contents; rendered GitHub pages are mostly navigation chrome
 - Don't be a yes man - respectfully disagree when necessary and provide honest feedback
 - When reporting information to me, be extremely concise and sacrifice grammar for the sake of concision.
 - Tell me when I'm doing something wrong
