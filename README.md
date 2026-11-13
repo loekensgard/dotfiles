@@ -39,7 +39,7 @@ cp claude/rules/secret-map.local.md.example claude/rules/secret-map.local.md
 
 OpenCode does not read `~/.claude/rules/` on its own. `install.sh` adds the
 rules glob to the `instructions` array in `~/.config/opencode/opencode.json`,
-so OpenCode loads `dotnet.md` and the gitignored secret map. The secret
+so OpenCode loads `engineering.md`, `dotnet.md`, and the gitignored secret map. The secret
 guardrails and the worker guard live in `CLAUDE.md`, which OpenCode loads as
 `AGENTS.md` without this entry. OpenCode resolves `~/` in an entry against the
 home directory. The script warns and changes nothing when the file is a
