@@ -1,11 +1,4 @@
-# Secrets
-
-## Guardrails
-
-- Do not look for credentials. Do not open, print, or search `.env` files, private keys, `.aws/credentials`, `.npmrc`, `.git-credentials`, or similar files. Do not work around the permission rules that block them.
-- Plugin and tool state files often contain API keys. Before you open an unknown config or state file, list only its field names: `jq -r 'paths(scalars) | map(tostring) | join(".")' <file>`.
-- If a secret surfaces anyway, stop and tell me at once. Give the file and the line, so that I can rotate the credential.
-- Do not repeat a secret value in a response, a file, a commit, or a request to an external service.
+# Secret handling
 
 ## 1Password
 
