@@ -1,10 +1,11 @@
+---
+name: delegation
+description: Delegation policy for Orca workers and subagents. Use before you start a code change, a code review, broad research, or work that splits into independent parts. Use also when you start or supervise Orca workers, hand off work, or choose the model or agent for a task. Covers model tiers, escalation, briefs, and worker results.
+---
+
 # Delegation
 
-GLM is free. Claude tokens cost money: Haiku costs the least, then Sonnet, then Opus. Give each task to the cheapest model that can do it. In this session, spend Claude tokens on plans, briefs, evidence checks, and decisions.
-
-## Role
-
-- If your prompt has Orca Task and Dispatch IDs, you are a worker. Do the task yourself, start no workers, and report with `worker_done`. Otherwise you are the coordinator, and the rules below apply.
+You are the coordinator: your prompt has no Orca Task and Dispatch IDs. GLM is free. Claude tokens cost money: Haiku costs the least, then Sonnet, then Opus. Give each task to the cheapest model that can do it. In this session, spend Claude tokens on plans, briefs, evidence checks, and decisions.
 
 ## What to delegate
 
