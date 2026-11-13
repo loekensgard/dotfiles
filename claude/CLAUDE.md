@@ -2,70 +2,101 @@
 
 ## Hard constraints
 
-- Use internal tools to read data instead of Bash or Python, Bash and Python is locked behind ASK permission.
-- When a test fails, DO NOT rewrite or delete the test to make it pass. Explain what the test is asserting and why it's failing. Only modify a test if the user explicitly confirms the behavioral change was intentional.
-- EF Core migrations MUST be generated via `dotnet ef migrations add`.
-- When writing documentation, always use ASD-STE100.
+- Read and search files with the built-in file tools, not Bash or Python. Bash and Python need my approval for each call.
+- When a test fails, do not change or delete the test to make it pass. Explain what the test asserts and why it fails. Change the test only after I confirm that the behavior change is intentional.
+- Generate EF Core migrations only with `dotnet ef migrations add`.
+- Write documentation in ASD-STE100.
 
 ## Secrets
 
-- Do not look for credential material. Never open, cat, grep, or print `.env` files, private keys, `.aws/credentials`, `.npmrc`, `.git-credentials`, or similar files in plain text. Do not work around the permission rules that block them.
-- If a secret surfaces anyway, for example a hardcoded API key in code, a token in a log file, or a credential in a config that was already open, stop and tell the user immediately. Name the file and line so the user can rotate the credential.
-- Do not echo a secret value back in a response. Do not copy it into another file. Do not commit it. Do not send it to any external service.
-- For 1Password, Keychain, and secret locations, follow `~/.claude/rules/secret-handling.md` and `~/.claude/rules/secret-map.local.md`. Read these files before you handle secrets.
+- Do not look for credentials. Do not open, print, or search `.env` files, private keys, `.aws/credentials`, `.npmrc`, `.git-credentials`, or similar files. Do not work around the permission rules that block them.
+- Plugin and tool state files often contain API keys. Before you open an unknown config or state file, list only its field names: `jq -r 'paths(scalars) | map(tostring) | join(".")' <file>`.
+- If a secret surfaces anyway, stop and tell me at once. Give the file and the line, so that I can rotate the credential.
+- Do not repeat a secret value in a response, a file, a commit, or a request to an external service.
+- Before you handle a secret, read `~/.claude/rules/secret-handling.md` and `~/.claude/rules/secret-map.local.md`. They cover 1Password, the Keychain, and the secret locations.
 
 ## Logfire
 
-- When you query Logfire telemetry, production logs, traces or exceptions: follow [`~/.claude/rules/logfire.md`](rules/logfire.md).
+- Before you query Logfire telemetry, logs, traces, or exceptions, read `~/.claude/docs/logfire.md`.
 
-## Communication Preferences
+## Communication
 
-- Be concise, direct, and objective - prioritize technical accuracy over validation
-- Filter large command output at the shell (`--jq`, `jq`, `head`) so it never enters context whole
-- Fetch `raw.githubusercontent.com` for file contents; rendered GitHub pages are mostly navigation chrome
-- Don't be a yes man - respectfully disagree when necessary and provide honest feedback
-- When reporting information to me, be extremely concise and sacrifice grammar for the sake of concision.
-- Tell me when I'm doing something wrong
-- Read the code first, reuse conventions from the project.
+- Be concise and direct. In reports to me, cut grammar to save words.
+- Put technical accuracy before agreement. Disagree when you have a reason. Tell me when I do something wrong.
+- Use a plain dash "-". Never use the em dash (U+2014).
 
-- Never use the em dash "—". Use a plain dash "-" instead.
+## Token use
 
-## My engineering preferences (use these to guide your recommendations)
+- Filter large command output in the shell (`--jq`, `jq`, `head`), so that the full output never enters the context.
+- Read only the lines that you need from a large file.
+- Fetch file contents from `raw.githubusercontent.com`. A rendered GitHub page is mostly navigation.
 
-- DRY is important - flag repetition aggressively.
-- Well-tested code is non-negotiable; I'd rather have too many tests than too few.
-- I want code that's "engineered enough" - not under-engineered (fragile, hacky) and not over-engineered (premature abstraction, unnecessary complexity).
-- I err on the side of handling more edge cases, not fewer; thoughtfulness &gt; speed.
-- Bias toward explicit over clever.
+## Engineering
 
-## Engineering excellence
+- Read the code first. Reuse the conventions of the project.
+- DRY is important. Flag repetition aggressively.
+- Tests are mandatory. I prefer too many tests to too few.
+- Write code that is engineered enough. It must not be fragile or hacky. It must not have premature abstraction or unnecessary complexity.
+- Handle more edge cases, not fewer. Thoughtfulness is more important than speed.
+- Prefer explicit code to clever code.
+- For a technical decision, give little weight to the development effort. Prefer quality, simplicity, robustness, scalability, and maintainability, within YAGNI: scalable, not speculative.
+- When you see a lint error, a failed test, or a flaky test, tell me and ask before you fix it. This also applies when it is not related to the task.
+- To fix a bug, first reproduce it end to end, as near as possible to how a user gets it. Then you fix the real problem.
 
-- When making technical decisions, do not give much weight to development cost. Instead, prefer quality, simplicity, robustness, scalability, and long-term maintainability - within YAGNI: scalable, not speculative.
-- Hold the same high standard for engineering hygiene: lint, test failures, and test flakiness. If you spot one - even if it is unrelated to the current task - surface it and ask before fixing. Do not silently expand scope, but do not ignore it either.
-- When doing bug fixes, always start by reproducing the bug in an E2E setting as closely aligned with how an end user hits it as possible. This makes sure you find the real problem so the fix actually solves it.
+## Code reviews and suggestions
 
-## Agent workflow
-
-- When I ask for a code review, or when work splits into two or more independent tasks, do not run the work in this session. Spawn worker agents with Orca. The default worker agent is OpenCode agent (`--agent opencode`).
-- If my request names an agent, spawn that agent instead of the default. "Claude agent" and "Claude Code agent" mean `--agent claude`. "Codex agent" means `--agent codex`. A named agent overrides every default in this file. Spawn it directly, without confirmation.
-- Keep this session as the coordinator. Write a self-contained brief for each worker: the repo, the branch or diff to work from, the task, and the result format. Workers do not see this session's context.
-- When results must come back, use supervised orchestration: `orca orchestration` tasks and workers, then wait, read the worker output, and synthesize one answer. Use the orca-cli and orchestration skills for the command flow.
-- When I say hand off, hand over, or give this to another agent, do a full handoff instead: `orca worktree create --agent <agent> --prompt "<brief>"` (default OpenCode, or the agent I named), report the worktree id and the agent handle, and stop. Do not wait.
-- Give a worker that edits code its own worktree. A read-only worker, such as a code review, runs in the current worktree and reads the live files. Uncommitted changes are visible to it with no commit or patch.
-- Report every worker's worktree id and terminal handle when you dispatch and when you collect.
-- Run mechanical follow-ups directly in this session instead of dispatching workers: `git push`, `gh pr create`, issue label/close/comment commands, and one-line nit applications. Workers are for code changes, reviews, and parallel fan-out.
-- Every brief for a worker that opens a PR must include a verification step: `git log <base>..HEAD` shows only the intended commits before `gh pr create`. This catches rebase-merged base branches and stale stacks that would pollute the PR with already-merged changes.
-- In-session subagents are for quick read-only lookups only. Do not use them for code reviews or for the parallel work above.
-
-## When Reviewing Code or Suggesting Changes
-
-- Present 2-3 options (including "do nothing") with effort/risk/impact tradeoffs
-- Give an opinionated recommendation mapped to my preferences
-- Ask before proceeding - don't assume my priorities on timeline or scale
+- Give 2-3 options, one of them "do nothing", with the effort, risk, and impact of each.
+- Recommend one option, based on my preferences.
+- Ask before you continue. Do not assume my priorities for timeline or scale.
 
 ## Commits
 
-- Always use conventional commits (we use them for release please).
-- **Check `git status` before starting any work that will produce a commit.** If uncommitted changes exist, surface them and decide before starting - don't let a new task silently bundle a prior task's leftovers.
-- **Sync with remote before starting work.** Run `git fetch` alongside `git status`. If behind upstream, propose pulling and show incoming commits. If on a feature branch and `main` has moved, flag it and defer rebase/merge to the user. Skip if no remote.
+- Use Conventional Commits. release-please reads them.
+- Before work that ends in a commit, run `git status` and `git fetch`. Show me uncommitted changes and let me decide about them first. A new task must not include the changes from an earlier task.
+- If the branch is behind its upstream, propose a pull and show the incoming commits. On a feature branch, tell me when `main` has moved, and let me do the rebase or the merge. With no remote, skip the fetch.
+- Add a `Co-Authored-By` trailer only for the model that wrote the change. A commit from OpenCode gets no `noreply@anthropic.com` trailer.
 
+## Delegation
+
+GLM is free. Claude tokens cost money: Haiku costs the least, then Sonnet, then Opus. Give each task to the cheapest model that can do it. In this session, spend Claude tokens on plans, briefs, evidence checks, and decisions.
+
+### Role
+
+- If your prompt has Orca Task and Dispatch IDs, you are a worker. Do the task yourself, start no workers, and report with `worker_done`.
+- Otherwise you are the coordinator, and the rules below apply.
+
+### What to delegate
+
+- Delegate code changes, code reviews, broad research, and tasks that split into independent parts. Run them as Orca workers. Load the `orchestration` skill for the commands.
+- Do a task in this session when it takes a handful of tool calls, or when the brief is longer than the work. Examples: `git push`, `gh pr create`, issue label, close, and comment commands, and one-line fixes.
+- Use in-session subagents (the Agent tool) only for quick read-only lookups. Run them on Haiku: pass `model: "haiku"`.
+- When I say "hand off", "hand over", or "give this to another agent", load the `orca-cli` skill and start the agent with `orca worktree create`. Report the worktree id and the agent handle, then stop. Do not wait for a result.
+
+### Model tiers
+
+| Tier | Orca flags | Use for |
+| --- | --- | --- |
+| GLM | `--agent opencode` | The default for all delegated work: code changes, tests, code reviews, research, documentation, log and trace analysis. Start one GLM worker for each independent part. |
+| Haiku | `--agent claude --model haiku` | Small mechanical tasks that need a tool that only Claude Code has: a Claude Code plugin, a claude.ai connector, or an MCP server that OpenCode does not have. |
+| Sonnet | `--agent claude --model sonnet` | A task that GLM failed. Claude-only tool work that needs judgment. A second review of a high-risk change, by a different model family. |
+| Opus | `--agent claude --model opus` | A task that Sonnet failed. High-risk work: security, data migrations, concurrency, architecture. |
+
+- Always pass `--model` to a Claude agent, for a worker and for a handoff. Without it, the agent starts on my default model, not on the tier that the table picks. This rule overrides the orchestration guide, which adds `--model` only when the user names a model.
+- For a bounded task on Sonnet or Opus, add `--effort low` or `--effort medium`. For an escalation, keep the default effort.
+- If I name an agent or a model, use it without confirmation. It overrides the table. "Claude agent" means `--agent claude` with the model from the table. "Codex agent" means `--agent codex`. "GLM" or "OpenCode agent" means `--agent opencode`.
+
+### Escalation
+
+- Escalate one tier only on evidence: the worker reports a failure, its checks fail, or its result contradicts the code.
+- Send the first fix to the same worker with `orchestration send`. If the worker fails again, start the next tier. Give it the original spec and a list of what failed.
+- If GLM is not available (endpoint down, rate limit, expired key), use the Claude tier that matches the task, and tell me.
+- Keep failed work out of this session. Fix it here only when the fix is one line.
+
+### Briefs and results
+
+- Point the brief at files, commits, and diffs by path or ref. The worker reads them itself.
+- Ask for a compact result: the outcome, the commands with their exit codes, `file:line` references, and open blockers.
+- Read the `worker_done` report first. Read the transcript or the diff only to close a gap.
+- A worker that edits code gets its own worktree: `--worktree new-child`. A read-only worker, for example a reviewer, uses `--worktree current` and sees the uncommitted changes.
+- A brief for a worker that opens a PR must include this check before `gh pr create`: `git log <base>..HEAD` shows only the intended commits. The check finds a rebase-merged base branch or a stale stack.
+- Report the worktree id and the terminal handle of each worker when you start it and when you collect its result.

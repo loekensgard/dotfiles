@@ -85,19 +85,26 @@ prune_links() {
   done
 }
 
+# Link each Markdown file in claude/<dir> to ~/.claude/<dir>.
+link_markdown_dir() {
+  local dir="$1" file
+  for file in "$REPO/claude/$dir"/*.md; do
+    [ -e "$file" ] || continue
+    link_file "claude/$dir/$(basename "$file")" "$CLAUDE_DIR/$dir/$(basename "$file")"
+  done
+}
+
+# rules/ loads in every Claude Code session. docs/ loads only when CLAUDE.md
+# points the agent at a file.
+MARKDOWN_DIRS="output-styles rules docs"
+
 info "== links =="
 link_file claude/CLAUDE.md "$CLAUDE_DIR/CLAUDE.md"
 link_file claude/statusline.sh "$CLAUDE_DIR/statusline.sh"
 link_file claude/CLAUDE.md "$HOME/.config/opencode/AGENTS.md"
 
-for style in "$REPO"/claude/output-styles/*.md; do
-  [ -e "$style" ] || continue
-  link_file "claude/output-styles/$(basename "$style")" "$CLAUDE_DIR/output-styles/$(basename "$style")"
-done
-
-for rule in "$REPO"/claude/rules/*.md; do
-  [ -e "$rule" ] || continue
-  link_file "claude/rules/$(basename "$rule")" "$CLAUDE_DIR/rules/$(basename "$rule")"
+for dir in $MARKDOWN_DIRS; do
+  link_markdown_dir "$dir"
 done
 
 for skill_dir in "$REPO"/claude/skills/*/; do
@@ -106,6 +113,6 @@ for skill_dir in "$REPO"/claude/skills/*/; do
 done
 
 info "== stale links =="
-prune_links "$CLAUDE_DIR/output-styles"
-prune_links "$CLAUDE_DIR/rules"
-prune_links "$CLAUDE_DIR/skills"
+for dir in $MARKDOWN_DIRS skills; do
+  prune_links "$CLAUDE_DIR/$dir"
+done
