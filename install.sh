@@ -48,8 +48,10 @@ link_file() {
     return 0
   fi
 
-  if act "create the directory $(dirname "$dest")"; then
-    mkdir -p -- "$(dirname "$dest")"
+  local dest_dir
+  dest_dir=$(dirname "$dest")
+  if [ ! -d "$dest_dir" ] && act "create the directory $dest_dir"; then
+    mkdir -p -- "$dest_dir"
   fi
 
   # A real file must never be lost. A stale symlink can go without a backup.
