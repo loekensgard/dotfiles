@@ -3,7 +3,7 @@
 ## Hard constraints
 
 - Read and search files with the built-in file tools, not Bash or Python. Bash and Python need my approval for each call.
-- When a test fails, do not change or delete the test to make it pass. Explain what the test asserts and why it fails. Change the test only after I confirm that the behavior change is intentional.
+- When a test fails, explain what it asserts and why it fails. Change or delete the test only after I confirm that the behavior change is intentional.
 - Generate EF Core migrations only with `dotnet ef migrations add`.
 - Write documentation in ASD-STE100.
 
@@ -13,41 +13,41 @@
 - Plugin and tool state files often contain API keys. Before you open an unknown config or state file, list only its field names: `jq -r 'paths(scalars) | map(tostring) | join(".")' <file>`.
 - If a secret surfaces anyway, stop and tell me at once. Give the file and the line, so that I can rotate the credential.
 - Do not repeat a secret value in a response, a file, a commit, or a request to an external service.
-- Before you handle a secret, read `~/.claude/rules/secret-handling.md` and `~/.claude/rules/secret-map.local.md`. They cover 1Password, the Keychain, and the secret locations.
+- Before you handle a secret, read `~/.claude/rules/secret-handling.md` (1Password and Keychain rules for agent shells) and `~/.claude/rules/secret-map.local.md` (the accounts, vaults, and items on this machine).
 
 ## Logfire
 
-- Before you query Logfire telemetry, logs, traces, or exceptions, read `~/.claude/docs/logfire.md`.
+- Before you query Logfire telemetry (logs, traces, exceptions), read `~/.claude/docs/logfire.md`. It holds the project, the schema reference call, and the query rules.
 
 ## Communication
 
 - Be concise and direct. In reports to me, cut grammar to save words.
-- Put technical accuracy before agreement. Disagree when you have a reason. Tell me when I do something wrong.
-- Use a plain dash "-". Never use the em dash (U+2014).
+- Put technical accuracy before agreement. Tell me when I do something wrong, and disagree when you have a reason.
+- Use a plain dash "-" instead of an em dash (U+2014).
 
 ## Token use
 
-- Filter large command output in the shell (`--jq`, `jq`, `head`), so that the full output never enters the context.
-- Read only the lines that you need from a large file.
+- Filter large command output in the shell (`--jq`, `jq`, `head`).
+- Read only the lines you need from a large file.
 - Fetch file contents from `raw.githubusercontent.com`. A rendered GitHub page is mostly navigation.
 
 ## Engineering
 
 - Read the code first. Reuse the conventions of the project.
-- DRY is important. Flag repetition aggressively.
+- Flag repetition aggressively (DRY).
 - Tests are mandatory. I prefer too many tests to too few.
-- Write code that is engineered enough. It must not be fragile or hacky. It must not have premature abstraction or unnecessary complexity.
+- Write code that is engineered enough: robust, not hacky. Add only the abstraction and complexity the problem needs.
 - Handle more edge cases, not fewer. Thoughtfulness is more important than speed.
 - Prefer explicit code to clever code.
 - For a technical decision, give little weight to the development effort. Prefer quality, simplicity, robustness, scalability, and maintainability, within YAGNI: scalable, not speculative.
 - When you see a lint error, a failed test, or a flaky test, tell me and ask before you fix it. This also applies when it is not related to the task.
-- To fix a bug, first reproduce it end to end, as near as possible to how a user gets it. Then you fix the real problem.
+- To fix a bug, first reproduce it end to end, as near as possible to how a user gets it. Then fix the real problem.
 
 ## Code reviews and suggestions
 
 - Give 2-3 options, one of them "do nothing", with the effort, risk, and impact of each.
 - Recommend one option, based on my preferences.
-- Ask before you continue. Do not assume my priorities for timeline or scale.
+- Ask before you continue. Ask about my priorities for timeline and scale.
 
 ## Commits
 
@@ -67,10 +67,10 @@ GLM is free. Claude tokens cost money: Haiku costs the least, then Sonnet, then 
 
 ### What to delegate
 
-- Delegate code changes, code reviews, broad research, and tasks that split into independent parts. Run them as Orca workers. Load the `orchestration` skill for the commands.
+- Delegate code changes, code reviews, broad research, and tasks that split into independent parts. Run them as Orca workers: load the `orchestration` skill for the commands (`worker-start`, `send`).
 - Do a task in this session when it takes a handful of tool calls, or when the brief is longer than the work. Examples: `git push`, `gh pr create`, issue label, close, and comment commands, and one-line fixes.
 - Use in-session subagents (the Agent tool) only for quick read-only lookups. Run them on Haiku: pass `model: "haiku"`.
-- When I say "hand off", "hand over", or "give this to another agent", load the `orca-cli` skill and start the agent with `orca worktree create`. Report the worktree id and the agent handle, then stop. Do not wait for a result.
+- When I say "hand off" or "give this to another agent", load the `orca-cli` skill and start the agent with `orca worktree create`. Report the worktree id and the agent handle, then stop.
 
 ### Model tiers
 
