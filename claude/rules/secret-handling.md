@@ -9,5 +9,5 @@
 
 ## NuGet restore failures
 
-- .NET builds and tests restore from a private NuGet feed. `~/.zshrc` populates the feed PAT from 1Password. The secret map names the account and item.
-- If a build or a test fails with `NuGet.targets ... Value cannot be null or empty string. (Parameter 'password')`, 1Password is not signed in. Ask the user to run `op signin --account <account>` in their own terminal. After the user confirms sign-in, re-source `~/.zshrc` or open a fresh shell, then retry. If it still fails, the agent shell cannot see the session at all, and the PAT must move to the Keychain.
+- .NET builds and tests restore from a private NuGet feed. `~/.zshenv` exports the feed PAT from the Keychain, so every zsh gets it, also non-interactive and agent shells. The secret map names the Keychain service.
+- If a build or a test fails with `NuGet.targets ... Value cannot be null or empty string. (Parameter 'password')`, the Keychain item is missing or the shell started before it existed. Ask the user to store or rotate it with the command in the secret map. Then restart the shell or the terminal and retry. A `401` from the feed means the PAT expired: rotate it the same way.
