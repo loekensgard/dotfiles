@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # install.sh - link this repository's Claude configuration into ~/.claude.
+# It also adds the Claude rules glob to the OpenCode instructions array.
 #
 # The script is idempotent. Run it again after a pull.
 #
@@ -70,6 +71,70 @@ link_file() {
   fi
 }
 
+# Add the Claude rules glob to the OpenCode "instructions" array, so OpenCode
+# loads the rule files in ~/.claude/rules. Claude Code loads them on its own.
+# The "~" form and the absolute form count as the same entry.
+set_opencode_instructions() {
+  local file="$HOME/.config/opencode/opencode.json"
+  # shellcheck disable=SC2088 # the literal tilde is intentional; OpenCode resolves it
+  local entry="~/.claude/rules/*.md"
+
+  # A symlinked config can point at a tracked file in a repository. Edit the
+  # target there, not through the link: an mv would replace the link with a
+  # regular file.
+  if [ -L "$file" ]; then
+    warn "$file is a symlink. Add \"$entry\" to the \"instructions\" array in the link target by hand."
+    return 0
+  fi
+  if [ ! -f "$file" ]; then
+    warn "$file does not exist. Add \"$entry\" to the \"instructions\" array by hand."
+    return 0
+  fi
+  if ! command -v jq >/dev/null 2>&1; then
+    warn "jq is not installed. Add \"$entry\" to the \"instructions\" array in $file by hand."
+    return 0
+  fi
+  # OpenCode also accepts JSONC. jq cannot read it, so the file stays as it is.
+  if ! jq empty "$file" >/dev/null 2>&1; then
+    warn "$file is not plain JSON. Add \"$entry\" to the \"instructions\" array by hand."
+    return 0
+  fi
+  local kind
+  kind=$(jq -r '.instructions // [] | type' "$file")
+  if [ "$kind" != "array" ]; then
+    warn "\"instructions\" in $file is not an array. Add \"$entry\" by hand."
+    return 0
+  fi
+  if jq -e --arg tilde "$entry" --arg abs "$HOME/.claude/rules/*.md" \
+    '(.instructions // []) | any(. == $tilde or . == $abs)' "$file" >/dev/null; then
+    info "ok       $file instructions"
+    return 0
+  fi
+
+  local backup
+  backup="$file.bak-$(date +%Y%m%d%H%M%S)"
+  if act "copy $file to $backup"; then
+    cp -- "$file" "$backup"
+    info "backup   $backup"
+  fi
+
+  if act "add $entry to the \"instructions\" array in $file"; then
+    local tmp
+    # The temp file sits next to the target, so the mv stays on one file
+    # system and is an atomic rename. mktemp gives it mode 0600, so copy the
+    # target's content and mode onto it first.
+    tmp=$(mktemp "$file.XXXXXX")
+    cp -p -- "$file" "$tmp"
+    if ! jq --arg entry "$entry" '.instructions = ((.instructions // []) + [$entry])' "$file" >"$tmp"; then
+      rm -f -- "$tmp"
+      warn "jq failed to write $file. The file is unchanged."
+      return 0
+    fi
+    mv -- "$tmp" "$file"
+    info "updated  $file"
+  fi
+}
+
 # Remove a symlink in $dir that points into this repository at a file that
 # no longer exists. A link that points elsewhere is left alone.
 prune_links() {
@@ -113,6 +178,9 @@ for skill_dir in "$REPO"/claude/skills/*/; do
   [ -d "$skill_dir" ] || continue
   link_file "claude/skills/$(basename "$skill_dir")" "$CLAUDE_DIR/skills/$(basename "$skill_dir")"
 done
+
+info "== opencode config =="
+set_opencode_instructions
 
 info "== stale links =="
 for dir in $MARKDOWN_DIRS skills; do
