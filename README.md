@@ -10,8 +10,8 @@ Personal Claude Code configuration.
 | `claude/CLAUDE.md` | `~/.config/opencode/AGENTS.md` | Same instructions for OpenCode, which reads `AGENTS.md` first. |
 | `claude/statusline.sh` | `~/.claude/statusline.sh` | The Claude Code status line. Referenced by `settings.json`. |
 | `claude/output-styles/*.md` | `~/.claude/output-styles/` | Output styles for Claude Code. Switch with `/output-style`. |
-| `claude/rules/*.md` | `~/.claude/rules/` | Scoped rules. `dotnet.md` has `paths:` frontmatter and loads only when Claude Code works with a file that matches a glob. Claude Code loads `secret-map.local.md` every session; it is gitignored, names the accounts, vaults, and items, and holds no secret values. OpenCode reads the files through `instructions` (see below). |
-| `claude/docs/*.md` | `~/.claude/docs/` | Reference docs: the engineering rules, the review format, the secret procedures, and the Logfire query rules. They do not load every session. An agent reads a doc only when `CLAUDE.md` points it there. |
+| `claude/rules/*.md` | `~/.claude/rules/` | Rules for most sessions. Claude Code loads `engineering.md` every session, because most sessions are code work. `dotnet.md` has `paths:` frontmatter and loads only when Claude Code works with a file that matches a glob. Claude Code loads `secret-map.local.md` every session; it is gitignored, names the accounts, vaults, and items, and holds no secret values. OpenCode reads the files through `instructions` (see below). |
+| `claude/docs/*.md` | `~/.claude/docs/` | Reference docs: the review format, the secret procedures, and the Logfire query rules. They do not load every session. An agent reads a doc only when `CLAUDE.md` points it there. |
 | `claude/skills/*` | `~/.claude/skills/` | Personal skills. The name and description load in every session; the body loads on demand. `commits` holds the commit procedure. `delegation` holds the delegation policy for Orca workers. |
 | `tests/install_test.sh` | not installed | Tests for `install.sh`. Run it after a change to the installer. |
 

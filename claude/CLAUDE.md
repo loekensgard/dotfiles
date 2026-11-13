@@ -32,5 +32,4 @@
 - Delegation: before you start a code change, a code review, broad research, or work that splits into independent parts, load the `delegation` skill. GLM workers cost nothing; Claude tokens cost money.
 - Commits: before you start work that ends in a commit, load the `commits` skill.
 - Logfire: before you query Logfire telemetry (logs, traces, exceptions), read `~/.claude/docs/logfire.md`. It holds the project, the schema reference call, and the query rules.
-- Code work: before you write or change code, read `~/.claude/docs/engineering.md`. It holds the engineering rules.
 - Reviews and suggestions: when I ask for a code review, options, or a suggestion, read `~/.claude/docs/reviews.md`. It holds the options format.
